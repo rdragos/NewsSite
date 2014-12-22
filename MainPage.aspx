@@ -9,7 +9,7 @@
         <Columns>
         <asp:TemplateField HeaderText="Categorii">
            <ItemTemplate> 
-           <h1><a href="<%# Eval("Name")%>"</a>Don't go there</h1>
+           <h1><a href=<%# "news_categories.aspx?category=" + Eval("Name")%>> <%#Eval("Name")%></a></h1>
            </ItemTemplate> 
         </asp:TemplateField>
         </Columns>
