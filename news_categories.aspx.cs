@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Diagnostics;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Data;
 public partial class news_categories : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
@@ -37,14 +38,25 @@ public partial class news_categories : System.Web.UI.Page
             SqlCommand oCmd = new SqlCommand(queryString, myConnection);
             oCmd.Parameters.AddWithValue("@fcatName", category_name);
             myConnection.Open();
+
+            var gridDataTable = new DataTable();
+            gridDataTable.Columns.Add("Title");
+
             using (SqlDataReader oReader = oCmd.ExecuteReader())
             {
                 while (oReader.Read())
                 {
-                    Debug.WriteLine(oReader["Title"].ToString());
+                    var newRow = gridDataTable.NewRow();                    
+                    newRow["Title"] = oReader["Title"];
+                    gridDataTable.Rows.Add(newRow);           
                 }
                 myConnection.Close();
             }
+
+            GridView1.DataSource = gridDataTable;
         }
+
+       
+        GridView1.DataBind();
     }
 }
