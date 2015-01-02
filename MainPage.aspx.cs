@@ -58,7 +58,7 @@ public partial class _Default : System.Web.UI.Page
             {
                 command.ExecuteNonQuery();
             }
-            catch (Exception e) { }
+            catch (Exception) { }
         }
         using (SqlCommand command = new SqlCommand(insertArticles, cursor))
         {

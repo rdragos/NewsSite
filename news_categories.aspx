@@ -3,12 +3,12 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false">
+    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" AllowSorting="true">
         <Columns>
             <asp:TemplateField>
                 <ItemTemplate>                    
                     <asp:Label ID="Label1" runat="server" ForeColor="Red">
-                        <%# Eval("Title") %>
+                    <h1> <a href='article_view.aspx?article_id=<%# Eval("ArticleId") %>'><%# Eval("Title") %></a></h1>
                     </asp:Label>
                 </ItemTemplate>
             </asp:TemplateField>

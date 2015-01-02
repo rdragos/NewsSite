@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Data;
-
+using System.Web.Security;
 public partial class article_view : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
@@ -66,6 +66,29 @@ public partial class article_view : System.Web.UI.Page
             GridView1.DataSource = gridDataTable;
         }
         GridView1.DataBind();
+
+        var comment_grid = new DataTable();
+        comment_grid.Columns.Add("Comments");
+        var yelRow = comment_grid.NewRow();
+        yelRow["Comments"] = "Yellow world";
+        comment_grid.Rows.Add(yelRow);
+        CommentGrid.DataSource = comment_grid;
+        CommentGrid.DataBind();
+    }
+    protected void postComment(object sender, EventArgs e)
+    {
+
+        Debug.WriteLine("YOLO");
+        Debug.WriteLine(Request.Params["article_id"]);
+        var userMembership = Membership.GetUser(User.Identity.Name);
+
+        if (userMembership == null)
+        {
+            ScriptManager.RegisterClientScriptBlock(this, GetType(), "Erorr message", "alert(Only registered users can post comments')", true);
+            return;
+        }
+        var postCommentTextBox = lvPostComment.FindControl("tbCommentText") as TextBox;
+        Debug.WriteLine(postCommentTextBox.Text);
     }
     
 }

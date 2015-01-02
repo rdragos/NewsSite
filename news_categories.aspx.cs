@@ -30,7 +30,7 @@ public partial class news_categories : System.Web.UI.Page
         using (SqlConnection myConnection = new SqlConnection(con))
         {
             string queryString =
-                "SELECT     Articles.Title " +
+                "SELECT     Articles.Title, Articles.ArticleId " +
                 "FROM         Articles INNER JOIN " +
                 "Categories ON Articles.CategoryName = Categories.Name " +
                 "WHERE     (Categories.Name =@fcatName)";
@@ -41,22 +41,20 @@ public partial class news_categories : System.Web.UI.Page
 
             var gridDataTable = new DataTable();
             gridDataTable.Columns.Add("Title");
-
+            gridDataTable.Columns.Add("ArticleId");
             using (SqlDataReader oReader = oCmd.ExecuteReader())
             {
                 while (oReader.Read())
                 {
                     var newRow = gridDataTable.NewRow();                    
                     newRow["Title"] = oReader["Title"];
+                    newRow["ArticleId"] = oReader["ArticleId"];
                     gridDataTable.Rows.Add(newRow);           
                 }
                 myConnection.Close();
             }
-
             GridView1.DataSource = gridDataTable;
         }
-
-       
         GridView1.DataBind();
     }
 }
