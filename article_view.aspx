@@ -51,12 +51,12 @@
         <asp:TemplateField>
             <ItemTemplate>
             <li>
-                <div class="commenterImage">
-                  <img src="http://lorempixel.com/50/50/people/6" alt="140x140" />
-                </div>
+                <h4 class="media-heading text-uppercase reviews">
+                    <%#Eval("UserName") %>
+                </h4>
                 <div class="commentText">
-                    <p class="">Hello this is a comment</p>
-                    <span class="date sub-text">on March 5th, 2014</span>
+                    <p class=""><%#Eval("Content") %></p>
+                    <span class="date sub-text"><%#Eval("PostDate") %></span>
                 </div>
             </li>
             </ItemTemplate>
@@ -78,8 +78,8 @@
         </asp:LoginView>
         </div>
         </div>
-        <h1> LOL </h1>
-        <p> HEI HEI HEI</p>
+            <h1> LOL </h1>
+            <p> HEI HEI HEI</p>
     </div>
 </asp:Content>
 

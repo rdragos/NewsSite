@@ -68,7 +68,6 @@ public partial class _Default : System.Web.UI.Page
             command.Parameters.AddWithValue("Content", content);
             DateTime mytime = DateTime.Now;
             string sqlformattedtime = mytime.ToString("yyyy-MM-dd HH:mm:ss");
-
             command.Parameters.AddWithValue("PublishDate", sqlformattedtime);
             command.Parameters.AddWithValue("CategoryName", categoryName);
             command.Parameters.AddWithValue("CreatedBy", userId);
