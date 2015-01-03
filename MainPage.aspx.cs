@@ -9,7 +9,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using System.Web.Security;
-
+using System.Diagnostics;
 public partial class _Default : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e){
@@ -47,23 +47,29 @@ public partial class _Default : System.Web.UI.Page
 
         const string insertArticles =
             "INSERT INTO Articles VALUES(" +
-            "@Title, @Content, @PublishDate, @CategoryName, @CreatedBy, @ArticleId)";
+            "@ArticleId, @Title, @Content, @PublishDate, @CategoryName, @CreatedBy)";
 
-        const string insertCategories = "INSERT INTO Categories VALUES(@Name)";
+        const string insertCategories = "INSERT INTO Categories VALUES(@CategoryName)";
 
         using (SqlCommand command = new SqlCommand(insertCategories, cursor))
         {
-            command.Parameters.AddWithValue("Name", categoryName);
+            command.Parameters.AddWithValue("CategoryName", categoryName);
             try
             {
                 command.ExecuteNonQuery();
             }
-            catch (Exception) { }
+            catch (Exception e)
+            {
+                cursor.Close();
+                Debug.WriteLine(e.Message);
+                return false;
+            }
         }
         using (SqlCommand command = new SqlCommand(insertArticles, cursor))
         {
 
-            command.Parameters.AddWithValue("ArticleId", Guid.NewGuid());
+            Guid ArticleId = Guid.NewGuid();
+            command.Parameters.AddWithValue("ArticleId", ArticleId);
             command.Parameters.AddWithValue("Title", title);
             command.Parameters.AddWithValue("Content", content);
             DateTime mytime = DateTime.Now;
@@ -72,7 +78,18 @@ public partial class _Default : System.Web.UI.Page
             command.Parameters.AddWithValue("CategoryName", categoryName);
             command.Parameters.AddWithValue("CreatedBy", userId);
 
-            command.ExecuteNonQuery();
+            Debug.WriteLine(ArticleId);
+            Debug.WriteLine(userId);
+            
+            try
+            {
+                command.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                return false;
+            }
 
         }
         cursor.Close();

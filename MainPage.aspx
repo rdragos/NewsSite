@@ -4,23 +4,19 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataKeyNames="Name"
+    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataKeyNames="CategoryName"
         DataSourceID="SqlDataSource1">
         <Columns>
         <asp:TemplateField HeaderText="Categorii">
            <ItemTemplate> 
-           <h1><a href=<%# "news_categories.aspx?category=" + Eval("Name")%>> <%#Eval("Name")%></a></h1>
+           <h1><a href=<%#"news_categories.aspx?category=" + Eval("CategoryName")%>> <%#Eval("CategoryName")%></a></h1>
            </ItemTemplate> 
+
         </asp:TemplateField>
         </Columns>
     </asp:GridView>
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:SqlServices %>"
-        SelectCommand="SELECT * FROM Categories;"
-        UpdateCommand="UPDATE Categories SET Name = @Name WHERE ID = @ID;">
+        SelectCommand="SELECT DISTINCT CategoryName FROM Categories;">
     </asp:SqlDataSource>
     <asp:Button ID="Button1" runat="server" Text="Generate SQL" OnClick="GenerateSQL"/>
 </asp:Content>
-<%--  SELECT Articles.ArticleId FROM [vw_aspnet_Users] as #DragosArticles
-    INNER JOIN Articles ON aspnet_Users.UserId = Articles.UserId
-    WHERE aspnet_Users.UserName = 'rdragos';
---%>

@@ -32,8 +32,8 @@ public partial class news_categories : System.Web.UI.Page
             string queryString =
                 "SELECT     Articles.Title, Articles.ArticleId " +
                 "FROM         Articles INNER JOIN " +
-                "Categories ON Articles.CategoryName = Categories.Name " +
-                "WHERE     (Categories.Name =@fcatName)";
+                "Categories ON Articles.CategoryName = Categories.CategoryName " +
+                "WHERE     (Categories.CategoryName =@fcatName)";
 
             SqlCommand oCmd = new SqlCommand(queryString, myConnection);
             oCmd.Parameters.AddWithValue("@fcatName", category_name);

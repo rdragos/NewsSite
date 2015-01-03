@@ -1,13 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="article_view.aspx.cs" Inherits="article_view" %>
 <%@ Import Namespace="System.Globalization" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
-    <link href="Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-	<link href="Bootstrap/css/style.css" rel="stylesheet" type="text/css"/>
     <link href="Styles/comments.css" rel="Stylesheet" type="text/css" />
-
-    <script type="text/javascript" src="Bootstrap/js/jquery.min.js"></script>
-	<script type="text/javascript" src="Bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="Bootstrap/js/scripts.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 <div class="container">
