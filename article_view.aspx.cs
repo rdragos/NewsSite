@@ -11,11 +11,11 @@ using System.Data;
 using System.Web.Security;
 public partial class article_view : System.Web.UI.Page
 {
+    public const int APPROVED = 0;
+    public const int REJECTED = 2;
+
     protected void Page_Load(object sender, EventArgs e)
-    {
-        if (!Roles.IsUserInRole("editor") && !Roles.IsUserInRole("admin")) {
-            Response.Redirect("MainPage.aspx");
-        }
+    { 
         if (!Page.IsPostBack)
         {
             if (Request.Params["article_id"] == null)
@@ -39,20 +39,46 @@ public partial class article_view : System.Web.UI.Page
             }
         }
     }
+    private void setPendingStatus(int pendingStatus)
+    {
+        var con = ConfigurationManager.ConnectionStrings["SqlServices"].ToString();
+        using (SqlConnection myConnection = new SqlConnection(con))
+        {
+            string updateString =
+                "UPDATE Articles SET PendingStatus=@fPendingStatus " +
+                "WHERE (Articles.ArticleId = @fArticleId)";
+            SqlCommand oCmd = new SqlCommand(updateString, myConnection);
+
+            oCmd.Parameters.AddWithValue("@fArticleId", Session["ArticleId"].ToString());
+            oCmd.Parameters.AddWithValue("@fPendingStatus", pendingStatus.ToString());
+            myConnection.Open();
+            try
+            {
+                oCmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+    }
     protected void ApproveArticle(object sender, EventArgs e)
     {
+        setPendingStatus(APPROVED);
+        Response.Redirect("review_news.aspx");
     }
     protected void RejectArticle(object sender, EventArgs e)
     {
+        setPendingStatus(REJECTED);
+        Response.Redirect("review_news.aspx");
     }
     protected void WriteHtmlForArticle(Guid article_id)
     {
         var con = ConfigurationManager.ConnectionStrings["SqlServices"].ToString();
         using (SqlConnection myConnection = new SqlConnection(con))
         {
-            //TODO: Fix the query string
             string queryString =
-                "SELECT     Title, Content " +
+                "SELECT     Title, Content, ArticleId " +
                 "FROM         Articles " +
                 "WHERE     (Articles.ArticleId =@fArticleId)";
             SqlCommand oCmd = new SqlCommand(queryString, myConnection);
@@ -60,7 +86,7 @@ public partial class article_view : System.Web.UI.Page
             var gridDataTable = new DataTable();
             gridDataTable.Columns.Add("Title");
             gridDataTable.Columns.Add("Content");
-
+            gridDataTable.Columns.Add("ArticleId");
             myConnection.Open();
             using (SqlDataReader oReader = oCmd.ExecuteReader())
             {
@@ -69,10 +95,14 @@ public partial class article_view : System.Web.UI.Page
                     var newRow = gridDataTable.NewRow();                    
                     newRow["Title"] = oReader["Title"];
                     newRow["Content"] = oReader["Content"];
+                    newRow["ArticleId"] = oReader["ArticleId"];
+
+                    Session["ArticleId"] = oReader["ArticleId"];
                     gridDataTable.Rows.Add(newRow);           
                 }
                 myConnection.Close();
             }
+
             GridView1.DataSource = gridDataTable;
         }
         GridView1.DataBind();
@@ -116,8 +146,6 @@ public partial class article_view : System.Web.UI.Page
     }
     protected void postComment(object sender, EventArgs e)
     {
-
-        Debug.WriteLine("YOLO");
         Debug.WriteLine(Request.Params["article_id"]);
         var userMembership = Membership.GetUser(User.Identity.Name);
 

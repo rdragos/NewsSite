@@ -79,9 +79,7 @@
                 </button>
             </div>
         </AnonymousTemplate>
-        <RoleGroups>
-            <asp:RoleGroup Roles="user">
-                <ContentTemplate>
+        <LoggedInTemplate>
                 <div class="navbar-text pull-right">
                     Hello , 
                     <asp:LoginName ID="LoginName1" runat="server" />
@@ -92,26 +90,31 @@
                     runat="server" OnClick="ProposeNews"
                     Text="Propose News!"/>
                 </div>
-                </ContentTemplate>
-            </asp:RoleGroup>
+       </LoggedInTemplate>
+       </asp:LoginView>
+
+       <asp:LoginView runat="server">
+       <RoleGroups>
             <asp:RoleGroup Roles="admin,editor">
                 <ContentTemplate>
-                 <div class="navbar-text pull-right">
-                    Hello , 
-                    <asp:LoginName ID="LoginName1" runat="server" />
-                    <asp:LoginStatus ID="LoginStatus1" runat="server" />
-                </div>
-                <div class="col-md-4 text-center">
-                    <asp:Button id="Button1" CssClass="btn btn-danger"
-                    runat="server" OnClick="ProposeNews"
-                    Text="Propose News!"/>
-                </div>
                     <asp:Button id="ReviewButton" CssClass="btn btn-default"
                     runat="server" OnClick="Review"
                     Text="Review Articles"/> 
                 </ContentTemplate>
             </asp:RoleGroup>
         </RoleGroups>
+        </asp:LoginView>
+
+        <asp:LoginView runat="server">
+           <RoleGroups>
+            <asp:RoleGroup Roles="admin">
+            <ContentTemplate>
+                <asp:Button id="adminbtn" CssClass="btn btn-default"
+                    runat="server" OnClick="dir_to_admin_page"
+                    Text="Admin Page"/> 
+            </ContentTemplate>
+            </asp:RoleGroup>
+           </RoleGroups> 
         </asp:LoginView>
     </div>
     </nav>

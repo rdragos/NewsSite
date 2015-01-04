@@ -25,5 +25,9 @@ public partial class MasterPage : System.Web.UI.MasterPage
     {
         Response.Redirect("review_news.aspx");
     }
+    public void dir_to_admin_page(object sender, EventArgs arg)
+    {
+        Response.Redirect("admin_page.aspx");
+    }
 
 }
