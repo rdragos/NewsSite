@@ -33,7 +33,7 @@ public partial class news_categories : System.Web.UI.Page
                 "SELECT     Articles.Title, Articles.ArticleId, Articles.PublishDate " +
                 "FROM         Articles INNER JOIN " +
                 "Categories ON Articles.CategoryName = Categories.CategoryName " +
-                "WHERE     (Categories.CategoryName =@fcatName)";
+                "WHERE     (Categories.CategoryName =@fcatName) AND Articles.PendingStatus=0";
 
             SqlCommand oCmd = new SqlCommand(queryString, myConnection);
             oCmd.Parameters.AddWithValue("@fcatName", category_name);
@@ -47,11 +47,11 @@ public partial class news_categories : System.Web.UI.Page
             {
                 while (oReader.Read())
                 {
-                    var newRow = gridDataTable.NewRow();                    
+                    var newRow = gridDataTable.NewRow();
                     newRow["Title"] = oReader["Title"];
                     newRow["ArticleId"] = oReader["ArticleId"];
                     newRow["PublishDate"] = oReader["PublishDate"];
-                    gridDataTable.Rows.Add(newRow);           
+                    gridDataTable.Rows.Add(newRow);
                 }
                 myConnection.Close();
             }

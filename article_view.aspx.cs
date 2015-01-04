@@ -13,6 +13,9 @@ public partial class article_view : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (!Roles.IsUserInRole("editor") && !Roles.IsUserInRole("admin")) {
+            Response.Redirect("MainPage.aspx");
+        }
         if (!Page.IsPostBack)
         {
             if (Request.Params["article_id"] == null)
@@ -35,6 +38,12 @@ public partial class article_view : System.Web.UI.Page
                 return;
             }
         }
+    }
+    protected void ApproveArticle(object sender, EventArgs e)
+    {
+    }
+    protected void RejectArticle(object sender, EventArgs e)
+    {
     }
     protected void WriteHtmlForArticle(Guid article_id)
     {

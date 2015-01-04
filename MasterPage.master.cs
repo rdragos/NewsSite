@@ -19,7 +19,11 @@ public partial class MasterPage : System.Web.UI.MasterPage
     }
     public void ProposeNews(object sender, EventArgs arg)
     {
-
+        Response.Redirect("propose_news.aspx");
+    }
+    public void Review(object sender, EventArgs arg)
+    {
+        Response.Redirect("review_news.aspx");
     }
 
 }

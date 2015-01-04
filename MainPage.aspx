@@ -9,9 +9,8 @@
         <Columns>
         <asp:TemplateField HeaderText="Categorii">
            <ItemTemplate> 
-           <h1><a href=<%#"news_categories.aspx?category=" + Eval("CategoryName")%>> <%#Eval("CategoryName")%></a></h1>
-           </ItemTemplate> 
-
+           <h1><a href=<%#"news_categories.aspx?category=" + Eval("CategoryName").ToString().Replace(" ", "%20")%>> <%#Eval("CategoryName")%></a></h1>
+           </ItemTemplate>
         </asp:TemplateField>
         </Columns>
     </asp:GridView>
