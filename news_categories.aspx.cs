@@ -30,7 +30,7 @@ public partial class news_categories : System.Web.UI.Page
         using (SqlConnection myConnection = new SqlConnection(con))
         {
             string queryString =
-                "SELECT     Articles.Title, Articles.ArticleId " +
+                "SELECT     Articles.Title, Articles.ArticleId, Articles.PublishDate " +
                 "FROM         Articles INNER JOIN " +
                 "Categories ON Articles.CategoryName = Categories.CategoryName " +
                 "WHERE     (Categories.CategoryName =@fcatName)";
@@ -42,6 +42,7 @@ public partial class news_categories : System.Web.UI.Page
             var gridDataTable = new DataTable();
             gridDataTable.Columns.Add("Title");
             gridDataTable.Columns.Add("ArticleId");
+            gridDataTable.Columns.Add("PublishDate");
             using (SqlDataReader oReader = oCmd.ExecuteReader())
             {
                 while (oReader.Read())
@@ -49,6 +50,7 @@ public partial class news_categories : System.Web.UI.Page
                     var newRow = gridDataTable.NewRow();                    
                     newRow["Title"] = oReader["Title"];
                     newRow["ArticleId"] = oReader["ArticleId"];
+                    newRow["PublishDate"] = oReader["PublishDate"];
                     gridDataTable.Rows.Add(newRow);           
                 }
                 myConnection.Close();

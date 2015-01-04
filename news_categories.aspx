@@ -7,9 +7,12 @@
         <Columns>
             <asp:TemplateField>
                 <ItemTemplate>                    
-                    <asp:Label ID="Label1" runat="server" ForeColor="Red">
                     <h1> <a href='article_view.aspx?article_id=<%# Eval("ArticleId") %>'><%# Eval("Title") %></a></h1>
-                    </asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:TemplateField>
+                <ItemTemplate>
+                    <h1><%#Eval("PublishDate") %></h1> 
                 </ItemTemplate>
             </asp:TemplateField>
         </Columns>

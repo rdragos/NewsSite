@@ -17,5 +17,9 @@ public partial class MasterPage : System.Web.UI.MasterPage
     {
         Roles.AddUserToRole(CreateUserWizard1.UserName, "user");
     }
+    public void ProposeNews(object sender, EventArgs arg)
+    {
+
+    }
 
 }
