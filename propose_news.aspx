@@ -4,16 +4,16 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <div class="container">
-    <div class="clearfix pull-right">
-        <p runat="server" id="CategoryTag" contenteditable="true">Some Random Category</p>                
+    <div class="row clearfix" style="text-align:right">
+    <asp:TextBox runat="server" id="CategoryTag" placeholder="Here goes Category"></asp:TextBox>
     </div>
     <div class="row clearfix">
         <div class="col-md-12 column">
         <img class="img-thumbnail" alt="140x140" src="http://lorempixel.com/140/140/"/>
             <div class="page-header">
-            <h1 runat="server" id="TitleTag" contenteditable="true">LALALAL</h1>
+            <asp:TextBox runat="server" ID="TitleTag" placeholder="Here goes Title"></asp:TextBox>
             </div>
-            <p runat="server" id="ContentTag" contenteditable="true">Text in paragraph</p>
+            <asp:TextBox runat="server" ID="ContentTag" placeholder="Here goes Content"></asp:TextBox>
         </div>
     </div>
         <asp:Button ID="Button1" runat="server"

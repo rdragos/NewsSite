@@ -62,8 +62,10 @@
     <nav class="navbar navbar-default">
     <div class="container-fluid">        
         <div class="navbar-header">
-        <a class="navbar-brand" href="MainPage.aspx">Home</a>
+        <a class="navbar-brand" href="IndexPage.aspx">Home</a>
         </div> 
+        <a class="navbar-brand" href="display_categories.aspx">Categories</a>
+        <a class="navbar-brand" href="search_content.aspx">Search</a>
         <asp:LoginView ID="LoginView2" runat="server">
         <AnonymousTemplate>
             <div class="btn-group clearfix pull-right">

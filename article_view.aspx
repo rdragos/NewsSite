@@ -9,6 +9,10 @@
         <Columns>
         <asp:TemplateField>
             <ItemTemplate>
+            <div class="span6 pull-right" style="text-align:right;">
+                <p>Category: <%# Eval("CategoryName") %></p>
+                <p>Created on: <%# Eval("PublishDate") %></p>
+            </div>
             <div class="row clearfix">
             <div class="col-md-12 column">
 			<img class="img-thumbnail" alt="140x140" src="http://lorempixel.com/140/140/"/>
@@ -73,29 +77,8 @@
         </div>
 
         </div>
-        <asp:LoginView ID="LoginView2" runat="server">
-        <RoleGroups>
-        <asp:RoleGroup Roles="admin,editor">
-            <ContentTemplate>
-            <asp:LinkButton ID="LinkButton1" 
-                    runat="server" 
-                    CssClass="btn btn-primary"    
-                    style="vertical-align:middle;"
-                    OnClick="ApproveArticle">
-            <i aria-hidden="true" class="glyphicon glyphicon-ok"></i>Approve
-            </asp:LinkButton>
-            <asp:LinkButton ID="LinkButton2" 
-                    runat="server" 
-                    CssClass="btn btn-danger"    
-                    OnClick="RejectArticle">
-            <i aria-hidden="true" class="glyphicon glyphicon-remove"></i>Reject
-            </asp:LinkButton>
-            </ContentTemplate>
-        </asp:RoleGroup>
-        </RoleGroups>
-        </asp:LoginView>
-        <h1> LOL </h1>
-        <p> HEI HEI HEI</p>
+        <div id="EditorButtons" CssStyle="vertical-align:middle;" runat="server">
+        </div>
     </div>
 </asp:Content>
 

@@ -30,10 +30,11 @@ public partial class news_categories : System.Web.UI.Page
         using (SqlConnection myConnection = new SqlConnection(con))
         {
             string queryString =
-                "SELECT     Articles.Title, Articles.ArticleId, Articles.PublishDate " +
-                "FROM         Articles INNER JOIN " +
-                "Categories ON Articles.CategoryName = Categories.CategoryName " +
-                "WHERE     (Categories.CategoryName =@fcatName) AND Articles.PendingStatus=0";
+                "SELECT     Articles.Title, Articles.ArticleId, Articles.PublishDate, " +
+            "aspnet_Users.UserName " +
+            "FROM Articles INNER JOIN aspnet_Users ON " +
+            "Articles.CreatedBy = aspnet_Users.UserId " + 
+            "WHERE     (Articles.CategoryName =@fcatName) AND Articles.PendingStatus=0";
 
             SqlCommand oCmd = new SqlCommand(queryString, myConnection);
             oCmd.Parameters.AddWithValue("@fcatName", category_name);
@@ -43,6 +44,7 @@ public partial class news_categories : System.Web.UI.Page
             gridDataTable.Columns.Add("Title");
             gridDataTable.Columns.Add("ArticleId");
             gridDataTable.Columns.Add("PublishDate");
+            gridDataTable.Columns.Add("PublisherName");
             using (SqlDataReader oReader = oCmd.ExecuteReader())
             {
                 while (oReader.Read())
@@ -51,12 +53,45 @@ public partial class news_categories : System.Web.UI.Page
                     newRow["Title"] = oReader["Title"];
                     newRow["ArticleId"] = oReader["ArticleId"];
                     newRow["PublishDate"] = oReader["PublishDate"];
+                    newRow["PublisherName"] = oReader.GetString(3);
                     gridDataTable.Rows.Add(newRow);
                 }
                 myConnection.Close();
             }
-            GridView1.DataSource = gridDataTable;
+            Session["TaskTable"] = gridDataTable;
+            GridView1.DataSource = Session["TaskTable"];
         }
         GridView1.DataBind();
+    }
+    protected void gvName_Sorting( object sender, GridViewSortEventArgs e )
+    {
+        DataTable dt = Session["TaskTable"] as DataTable;
+        if (dt != null)
+        {
+            dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+            GridView1.DataSource = Session["TaskTable"];
+            GridView1.DataBind();
+        }
+    }
+    private string GetSortDirection(string column)
+    {
+        string sortDirection = "ASC";
+
+        string sortExpression = ViewState["SortExpression"] as string;
+        if (sortExpression != null)
+        {
+            if (sortExpression == column)
+            {
+                string lastDirection = ViewState["SortDirection"] as string;
+                if ((lastDirection != null) && (lastDirection == "ASC"))
+                {
+                    sortDirection = "DESC";
+                }
+            }
+        }
+        ViewState["SortDirection"] = sortDirection;
+        ViewState["SortExpression"] = column;
+
+        return sortDirection;
     }
 }

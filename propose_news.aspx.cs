@@ -11,6 +11,8 @@ using System.Web.Security;
 
 public partial class propose_news : System.Web.UI.Page
 {
+
+    public const int IN_QUEUE_STATUS = 1;
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!User.Identity.IsAuthenticated)
@@ -32,9 +34,9 @@ public partial class propose_news : System.Web.UI.Page
         }
         Guid userId = (Guid)membershipUser.ProviderUserKey;
 
-        string categoryName = CategoryTag.InnerText;
-        string title = TitleTag.InnerText;
-        string content = ContentTag.InnerText;
+        string categoryName = CategoryTag.Text;
+        string title = TitleTag.Text;
+        string content = ContentTag.Text;
 
         Debug.WriteLine(categoryName);
         Debug.WriteLine(title);
@@ -56,7 +58,7 @@ public partial class propose_news : System.Web.UI.Page
 
         const string insertArticles =
             "INSERT INTO Articles VALUES(" +
-            "@ArticleId, @Title, @Content, @PublishDate, @CategoryName, @CreatedBy)";
+            "@ArticleId, @Title, @Content, @PublishDate, @CategoryName, @CreatedBy, @PendingStatus)";
 
         const string insertCategories = "INSERT INTO Categories VALUES(@CategoryName)";
 
@@ -86,7 +88,7 @@ public partial class propose_news : System.Web.UI.Page
             command.Parameters.AddWithValue("PublishDate", sqlformattedtime);
             command.Parameters.AddWithValue("CategoryName", categoryName);
             command.Parameters.AddWithValue("CreatedBy", userId);
-            command.Parameters.AddWithValue("PendingStatus", 1);
+            command.Parameters.AddWithValue("PendingStatus", IN_QUEUE_STATUS);
             Debug.WriteLine(ArticleId);
             Debug.WriteLine(userId);
             

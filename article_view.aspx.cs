@@ -9,27 +9,31 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Data;
 using System.Web.Security;
+using System.Web.UI.HtmlControls;
 public partial class article_view : System.Web.UI.Page
 {
     public const int APPROVED = 0;
     public const int REJECTED = 2;
-
+    public const int IN_QUEUE_STATUS = 1;
     protected void Page_Load(object sender, EventArgs e)
-    { 
+    {
+        Session["PendingStatus"] = 0;
         if (!Page.IsPostBack)
         {
+
             if (Request.Params["article_id"] == null)
             {
                 Response.Redirect("MainPage.aspx");
                 return;
             }
 
-            Debug.WriteLine("In PostBack");
+            Debug.WriteLine("In page load");
             try
             {
                 Guid newGuid = Guid.Parse(Request.Params["article_id"]);
                 WriteHtmlForArticle(newGuid);
                 WriteHtmlForComments(newGuid);
+
             }
             catch (Exception ex)
             {
@@ -37,20 +41,53 @@ public partial class article_view : System.Web.UI.Page
                 Response.Redirect("google.ro");
                 return;
             }
+            if (Roles.IsUserInRole("editor"))
+            {
+                if (Session["PendingStatus"].ToString().Equals(IN_QUEUE_STATUS.ToString()))
+                {
+                    add_editor_controls();
+                }
+            }
         }
     }
-    private void setPendingStatus(int pendingStatus)
+    private void add_editor_controls()
+    {
+        Button bt1 = new Button();
+        bt1.CssClass = "btn btn-primary";
+        bt1.Click += new EventHandler(ApproveArticle);
+        bt1.Text += "Approve";
+        var icon = new HtmlGenericControl("i");
+        icon.Attributes["class"] = "glyphicon glyphicon-ok";
+        icon.Attributes["aria-hidden"] = "true";
+
+        bt1.Controls.Add(icon);
+        EditorButtons.Controls.Add(bt1);
+
+        Button bt2 = new Button();
+        bt2.CssClass = "btn btn-danger";
+        bt2.Click += new EventHandler(RejectArticle);
+        bt2.Text += "Reject";
+
+        var icon2 = new HtmlGenericControl();
+        icon2.Attributes["class"] = "glyphicon glyphicon-reject";
+        icon2.Attributes["aria-hidden"] = "true";
+        bt2.Controls.Add(icon2);
+
+        EditorButtons.Controls.Add(bt2);
+    }
+    private void setPendingStatus(int pendingStatus, int fromStatus)
     {
         var con = ConfigurationManager.ConnectionStrings["SqlServices"].ToString();
         using (SqlConnection myConnection = new SqlConnection(con))
         {
             string updateString =
                 "UPDATE Articles SET PendingStatus=@fPendingStatus " +
-                "WHERE (Articles.ArticleId = @fArticleId)";
+                "WHERE (Articles.ArticleId = @fArticleId AND Articles.PendingStatus=@fFromStatus)";
             SqlCommand oCmd = new SqlCommand(updateString, myConnection);
 
             oCmd.Parameters.AddWithValue("@fArticleId", Session["ArticleId"].ToString());
             oCmd.Parameters.AddWithValue("@fPendingStatus", pendingStatus.ToString());
+            oCmd.Parameters.AddWithValue("@fFromStatus", fromStatus.ToString());
             myConnection.Open();
             try
             {
@@ -64,12 +101,12 @@ public partial class article_view : System.Web.UI.Page
     }
     protected void ApproveArticle(object sender, EventArgs e)
     {
-        setPendingStatus(APPROVED);
+        setPendingStatus(APPROVED, IN_QUEUE_STATUS);
         Response.Redirect("review_news.aspx");
     }
     protected void RejectArticle(object sender, EventArgs e)
     {
-        setPendingStatus(REJECTED);
+        setPendingStatus(REJECTED, IN_QUEUE_STATUS);
         Response.Redirect("review_news.aspx");
     }
     protected void WriteHtmlForArticle(Guid article_id)
@@ -78,7 +115,7 @@ public partial class article_view : System.Web.UI.Page
         using (SqlConnection myConnection = new SqlConnection(con))
         {
             string queryString =
-                "SELECT     Title, Content, ArticleId " +
+                "SELECT     Title, Content, ArticleId, PendingStatus, CategoryName, PublishDate " +
                 "FROM         Articles " +
                 "WHERE     (Articles.ArticleId =@fArticleId)";
             SqlCommand oCmd = new SqlCommand(queryString, myConnection);
@@ -87,6 +124,8 @@ public partial class article_view : System.Web.UI.Page
             gridDataTable.Columns.Add("Title");
             gridDataTable.Columns.Add("Content");
             gridDataTable.Columns.Add("ArticleId");
+            gridDataTable.Columns.Add("CategoryName");
+            gridDataTable.Columns.Add("PublishDate");
             myConnection.Open();
             using (SqlDataReader oReader = oCmd.ExecuteReader())
             {
@@ -96,8 +135,10 @@ public partial class article_view : System.Web.UI.Page
                     newRow["Title"] = oReader["Title"];
                     newRow["Content"] = oReader["Content"];
                     newRow["ArticleId"] = oReader["ArticleId"];
-
+                    newRow["CategoryName"] = oReader["CategoryName"];
+                    newRow["PublishDate"] = oReader["PublishDate"];
                     Session["ArticleId"] = oReader["ArticleId"];
+                    Session["PendingStatus"] = oReader["PendingStatus"];
                     gridDataTable.Rows.Add(newRow);           
                 }
                 myConnection.Close();
