@@ -66,7 +66,7 @@ public partial class article_view : System.Web.UI.Page
         Button bt2 = new Button();
         bt2.CssClass = "btn btn-danger";
         bt2.Text += "Reject";
-
+        bt2.Style["margin-left"] = "10px";
         var icon2 = new HtmlGenericControl();
         icon2.Attributes["class"] = "glyphicon glyphicon-reject";
         icon2.Attributes["aria-hidden"] = "true";

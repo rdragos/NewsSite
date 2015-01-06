@@ -3,9 +3,14 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-    <asp:TextBox ID="tb_search" runat="server"></asp:TextBox>
-    <asp:Button ID="btn_search" runat="server" Text="Magic search" OnClick="searchAction"/>
-    <asp:GridView ID="gvResults" runat="server" AutoGenerateColumns="false">
+    <asp:TextBox ID="tb_search" runat="server" CssClass="form-control"></asp:TextBox>
+    <center style="margin-top:10px;">
+    <asp:Button ID="btn_search"  CssClass="btn btn-default" runat="server" Text="Magic search" OnClick="searchAction"/>
+    </center>
+    <asp:GridView ID="gvResults" runat="server" AutoGenerateColumns="false"
+    GridLines="Horizontal"
+    Border="0" Width="100%"
+    >
     <Columns>
         <asp:TemplateField>
             <ItemTemplate>

@@ -6,7 +6,9 @@
     <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false"
         AllowPaging="true"
         PageSize="5"
-        DataSourceID="SqlDataSource1">
+        GridLines="Horizontal"
+        Border="0"
+        DataSourceID="SqlDataSource1" width="100%">
         <Columns>
         <asp:TemplateField HeaderText="Ultimele stiri">
            <ItemTemplate> 

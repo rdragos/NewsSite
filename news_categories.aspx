@@ -3,7 +3,10 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" OnSorting="gvName_Sorting" AllowSorting="true">
+    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false" OnSorting="gvName_Sorting"
+    AllowSorting="true"
+    GridLines="Horizontal"
+    Border="0">
         <Columns>
         <asp:BoundField DataField="Title" HeaderText="Title" SortExpression="Title"/>
         <asp:BoundField DataField="PublishDate" HeaderText="PublishDate" SortExpression="PublishDate"/>

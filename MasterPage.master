@@ -41,7 +41,15 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div id="register_dialog">
+    <div class="container">
+    <div class="modal fade" id="registerModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">Register User</h4>
+      </div>
+    <div class="modal-body">
         <asp:CreateUserWizard ID="CreateUserWizard1" runat="server" OnCreatedUser="UpdateRole">
             <WizardSteps>
                 <asp:CreateUserWizardStep ID="CreateUserWizardStep1" runat="server">
@@ -51,14 +59,36 @@
             </WizardSteps>
         </asp:CreateUserWizard>
     </div>
-    <div id="login_dialog" style="background-color:black;">
-        <asp:LoginView ID="LoginView1" runat="server">
-        <AnonymousTemplate>
-        <asp:Login ID="Login1" runat="server">
-        </asp:Login>
-        </AnonymousTemplate>
-        </asp:LoginView>
-    </div>
+      <div class="modal-footer">
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+    <div class="modal fade" id="loginModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">Login</h4>
+          </div>
+          <div class="modal-body">
+          <center>
+            <div>
+                <asp:LoginView ID="LoginView1" runat="server">
+                <AnonymousTemplate>
+                <asp:Login ID="Login1" runat="server">
+                </asp:Login>
+                </AnonymousTemplate>
+                </asp:LoginView>
+            </div>
+            </center>
+        </div>
+          <div class="modal-footer">
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
     <nav class="navbar navbar-default">
     <div class="container-fluid">        
         <div class="navbar-header">
@@ -69,16 +99,15 @@
         <asp:LoginView ID="LoginView2" runat="server">
         <AnonymousTemplate>
             <div class="btn-group clearfix pull-right">
-                <button type="button"
-                    class="btn btn-default"
-                    onclick="$('#login_dialog').dialog('open');">
-                    Login     
-                </button>   
-                <button type="button"
-                    class="btn btn-default"
-                    onclick="$('#register_dialog').dialog('open');">
+                <a href="#loginModal" data-toggle="modal" role="button"
+                    class="btn btn-default">
+                    Login
+                    </a>
+                <a href="#registerModal" data-toggle="modal" role="button"
+                    class="btn btn-default">
                     Register
-                </button>
+                </a>
+               
             </div>
         </AnonymousTemplate>
         <LoggedInTemplate>
@@ -90,6 +119,7 @@
                 <div class="col-md-4 text-center">
                     <asp:Button id="Button1" CssClass="btn btn-danger"
                     runat="server" OnClick="ProposeNews"
+                    Style="margin-top:10px"
                     Text="Propose News!"/>
                 </div>
        </LoggedInTemplate>
@@ -100,7 +130,7 @@
             <asp:RoleGroup Roles="editor">
                 <ContentTemplate>
                     <asp:Button id="ReviewButton" CssClass="btn btn-default"
-                    runat="server" OnClick="Review"
+                    runat="server" OnClick="Review" Style="margin-top:10px;"
                     Text="Review Articles"/> 
                 </ContentTemplate>
             </asp:RoleGroup>
@@ -122,6 +152,10 @@
     </nav>
     <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
     </asp:ContentPlaceHolder>
+
+    </div>
+    <hr />
+        <footer class="text-center"> Copyright Dragos, &copy;2015 </footer>
     </form>
 </body>
 </html>

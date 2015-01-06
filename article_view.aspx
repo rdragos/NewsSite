@@ -15,7 +15,7 @@
             </div>
             <div class="row clearfix">
             <div class="col-md-12 column">
-			<img class="img-thumbnail" alt="140x140" src="<%#Eval("Link") %>"/>
+			<img class="img-thumbnail" style="width:200px;" alt="No image here" src="<%#Eval("Link") %>"/>
                 <div class="page-header">
                 <h1>
                     <%# Eval("Title")%>
@@ -66,7 +66,7 @@
         <asp:LoginView ID="lvPostComment" runat="server">
             <LoggedInTemplate>
             <div class="form-group">
-                <asp:TextBox ID="tbCommentText" runat="server" placeholder="Your comments" CssClass="form-control" >
+                <asp:TextBox ID="tbCommentText" runat="server" placeholder="Your comments" CssClass="form-control" width="100%">
                 </asp:TextBox>
             </div>    
             <div class="form-group">

@@ -5,9 +5,13 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataKeyNames="CategoryName"
+    GridLines="Horizontal"
+    AllowPaging="true"
+    PageSize="10"
+    Border="0" Width="100%"
         DataSourceID="SqlDataSource1">
         <Columns>
-        <asp:TemplateField HeaderText="Categorii">
+        <asp:TemplateField>
            <ItemTemplate> 
            <h1><a href=<%#"news_categories.aspx?category=" + Eval("CategoryName").ToString().Replace(" ", "%20")%>> <%#Eval("CategoryName")%></a></h1>
            </ItemTemplate>
