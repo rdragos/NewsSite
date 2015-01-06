@@ -21,6 +21,7 @@ public partial class search_content : System.Web.UI.Page
     }
     private void queryDB(string p)
     {
+        List<string> allQ = p.Split(' ').ToList();
         var con = ConfigurationManager.ConnectionStrings["SqlServices"].ToString();
         using (SqlConnection myConnection = new SqlConnection(con))
         {
@@ -63,7 +64,7 @@ public partial class search_content : System.Web.UI.Page
                         sList.Add(blob);
 
                     }
-                    Session["GridResults"] = filterResults(sList, gridDataTable, p);
+                    Session["GridResults"] = filterResults(sList, gridDataTable, allQ);
                     gvResults.DataSource = Session["GridResults"];
                 }
             }
@@ -74,19 +75,30 @@ public partial class search_content : System.Web.UI.Page
             gvResults.DataBind();
         }
     }
-    private DataTable filterResults(List<string> sList, DataTable dt, string toSearch)
+    private DataTable filterResults(List<string> sList, DataTable dt, List<string> toSearch)
     {
         int index = 0;
-        toSearch = toSearch.ToLower();
         List<Tuple<int, int>> scores = new List<Tuple<int, int>>();
         foreach (DataRow row in dt.Rows)
         {
+            Dictionary<string, int> wordCount = new Dictionary<string, int>();
+            foreach (string word in toSearch)
+            {
+                string curent_word = word.ToLower();
+                int value;
+                if (!wordCount.TryGetValue(curent_word, out value)) {
+                    wordCount.Add(curent_word, 1);
+                }
+            }
             var splitted_string = sList[index].Split(" ".ToArray());
             int cnt = 0;
             foreach(string batch in splitted_string)
             {
-                if (batch.ToLower() == toSearch)
+                string word = batch.ToLower();
+                if (wordCount.ContainsKey(word)) 
+                {
                     cnt += 1;
+                }
             }
             scores.Add(new Tuple<int, int>(cnt, index));
             index += 1;
@@ -119,7 +131,7 @@ public partial class search_content : System.Web.UI.Page
     {
         if (tb_search.Text != null)
         {
-            Response.Redirect("search_content.aspx?query=" + tb_search.Text);
+            Response.Redirect("search_content.aspx?query=" + tb_search.Text.Replace(" ", "%20"));
         }
     }
     

@@ -15,10 +15,10 @@
             </div>
             <div class="row clearfix">
             <div class="col-md-12 column">
-			<img class="img-thumbnail" alt="140x140" src="http://lorempixel.com/140/140/"/>
+			<img class="img-thumbnail" alt="140x140" src="<%#Eval("Link") %>"/>
                 <div class="page-header">
                 <h1>
-                    <%# Eval("Title")%> <small>Subtext for header</small>
+                    <%# Eval("Title")%>
                 </h1>
                 </div>
             <p>
@@ -37,7 +37,7 @@
             <button type="button" class="close" aria-hidden="true">&times;</button>
             </div>
         <div class="commentBox">
-            <p class="taskDescription">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+            <p class="taskDescription">Much comments. Very wow.</p>
         </div>
         <div class="actionBox">
         <ul class="commentList">

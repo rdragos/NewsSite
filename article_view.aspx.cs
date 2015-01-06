@@ -18,54 +18,53 @@ public partial class article_view : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Session["PendingStatus"] = 0;
-        if (!Page.IsPostBack)
+
+        if (Request.Params["article_id"] == null)
         {
+            Response.Redirect("MainPage.aspx");
+            return;
+        }
 
-            if (Request.Params["article_id"] == null)
-            {
-                Response.Redirect("MainPage.aspx");
-                return;
-            }
+        Debug.WriteLine("In page load");
+        try
+        {
+            Guid newGuid = Guid.Parse(Request.Params["article_id"]);
+            WriteHtmlForArticle(newGuid);
+            WriteHtmlForComments(newGuid);
 
-            Debug.WriteLine("In page load");
-            try
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            Response.Redirect("google.ro");
+            return;
+        }
+        if (Roles.IsUserInRole("editor"))
+        {
+            if (Session["PendingStatus"].ToString().Equals(IN_QUEUE_STATUS.ToString()))
             {
-                Guid newGuid = Guid.Parse(Request.Params["article_id"]);
-                WriteHtmlForArticle(newGuid);
-                WriteHtmlForComments(newGuid);
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                Response.Redirect("google.ro");
-                return;
-            }
-            if (Roles.IsUserInRole("editor"))
-            {
-                if (Session["PendingStatus"].ToString().Equals(IN_QUEUE_STATUS.ToString()))
-                {
-                    add_editor_controls();
-                }
+                add_editor_controls();
             }
         }
     }
     private void add_editor_controls()
     {
+
+        Debug.WriteLine("adding more buttons to editor");
         Button bt1 = new Button();
         bt1.CssClass = "btn btn-primary";
-        bt1.Click += new EventHandler(ApproveArticle);
         bt1.Text += "Approve";
         var icon = new HtmlGenericControl("i");
         icon.Attributes["class"] = "glyphicon glyphicon-ok";
         icon.Attributes["aria-hidden"] = "true";
 
         bt1.Controls.Add(icon);
+        bt1.Click += new EventHandler(ApproveArticle);
+
         EditorButtons.Controls.Add(bt1);
 
         Button bt2 = new Button();
         bt2.CssClass = "btn btn-danger";
-        bt2.Click += new EventHandler(RejectArticle);
         bt2.Text += "Reject";
 
         var icon2 = new HtmlGenericControl();
@@ -74,9 +73,12 @@ public partial class article_view : System.Web.UI.Page
         bt2.Controls.Add(icon2);
 
         EditorButtons.Controls.Add(bt2);
+        bt2.Click += new EventHandler(RejectArticle);
     }
     private void setPendingStatus(int pendingStatus, int fromStatus)
     {
+
+        Debug.WriteLine("Trying to set some status!");
         var con = ConfigurationManager.ConnectionStrings["SqlServices"].ToString();
         using (SqlConnection myConnection = new SqlConnection(con))
         {
@@ -97,10 +99,12 @@ public partial class article_view : System.Web.UI.Page
             {
                 Debug.WriteLine(ex.Message);
             }
+            Debug.WriteLine("OK UPDATE");
         }
     }
     protected void ApproveArticle(object sender, EventArgs e)
     {
+        Debug.WriteLine("Clicked Approved");
         setPendingStatus(APPROVED, IN_QUEUE_STATUS);
         Response.Redirect("review_news.aspx");
     }
@@ -115,8 +119,9 @@ public partial class article_view : System.Web.UI.Page
         using (SqlConnection myConnection = new SqlConnection(con))
         {
             string queryString =
-                "SELECT     Title, Content, ArticleId, PendingStatus, CategoryName, PublishDate " +
-                "FROM         Articles " +
+                "SELECT     Articles.Title, Articles.Content, Articles.ArticleId, " + 
+                "Articles.PendingStatus, Articles.CategoryName, Articles.PublishDate " +
+                "FROM         Articles " + 
                 "WHERE     (Articles.ArticleId =@fArticleId)";
             SqlCommand oCmd = new SqlCommand(queryString, myConnection);
             oCmd.Parameters.AddWithValue("@fArticleId", article_id.ToString());
@@ -126,7 +131,21 @@ public partial class article_view : System.Web.UI.Page
             gridDataTable.Columns.Add("ArticleId");
             gridDataTable.Columns.Add("CategoryName");
             gridDataTable.Columns.Add("PublishDate");
+            gridDataTable.Columns.Add("Link");
             myConnection.Open();
+
+            string queryImg = "SELECT ThumbLink FROM Thumbnails " +
+                "WHERE (ArticleId=@fArticleId)";
+            SqlCommand iCmd = new SqlCommand(queryImg, myConnection);
+            iCmd.Parameters.AddWithValue("@fArticleId", article_id);
+            string imageLink = "";
+            using (SqlDataReader iReader = iCmd.ExecuteReader())
+            {
+                while (iReader.Read())
+                {
+                    imageLink = iReader["ThumbLink"].ToString();
+                }
+            }
             using (SqlDataReader oReader = oCmd.ExecuteReader())
             {
                 while (oReader.Read())
@@ -137,8 +156,10 @@ public partial class article_view : System.Web.UI.Page
                     newRow["ArticleId"] = oReader["ArticleId"];
                     newRow["CategoryName"] = oReader["CategoryName"];
                     newRow["PublishDate"] = oReader["PublishDate"];
+                    //newRow["Link"] = oReader["Link"];
                     Session["ArticleId"] = oReader["ArticleId"];
                     Session["PendingStatus"] = oReader["PendingStatus"];
+                    newRow["Link"] = imageLink;
                     gridDataTable.Rows.Add(newRow);           
                 }
                 myConnection.Close();
@@ -200,7 +221,16 @@ public partial class article_view : System.Web.UI.Page
 
         DateTime PostDate = DateTime.Now;
         Guid CommentId = Guid.NewGuid();
-        Guid ArticleId = new Guid(Request.Params["article_id"]);
+        Guid ArticleId;
+        try {
+            ArticleId = Guid.Parse(Request.Params["article_id"]);
+        } catch(Exception ex) {
+            Debug.WriteLine("Cannot parse guid at line 204 in article_view.aspx");
+            Debug.WriteLine(ex.Message);
+             ScriptManager.RegisterClientScriptBlock(this, GetType(),
+                "Erorr message", "alert('Cannot convert guid :(')", true);
+            return ;
+        }
         var userId = (Guid)userMembership.ProviderUserKey;
 
         if (!CreateNewCommentIntoDB(PostDate, CommentId,
@@ -215,6 +245,7 @@ public partial class article_view : System.Web.UI.Page
             Debug.WriteLine("Succesfully inserted comment");
         }
         Debug.WriteLine(postCommentTextBox.Text);
+        Response.Redirect("article_view.aspx?article_id=" + ArticleId);
     }
 
     private bool CreateNewCommentIntoDB(DateTime PostDate, Guid CommentId, Guid ArticleId, string Content, Guid UserId)
@@ -225,7 +256,7 @@ public partial class article_view : System.Web.UI.Page
         cursor.Open();
         const string insertComment =
             "INSERT INTO Comments VALUES(" +
-            "@PostDate, @CommentId, @ArticleId, @Content, @UserId)";
+            "@PostDate, @Content, @UserId, @ArticleId, @CommentId)";
         using (SqlCommand command = new SqlCommand(insertComment, cursor))
         {
 

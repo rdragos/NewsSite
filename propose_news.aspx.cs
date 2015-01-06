@@ -37,11 +37,12 @@ public partial class propose_news : System.Web.UI.Page
         string categoryName = CategoryTag.Text;
         string title = TitleTag.Text;
         string content = ContentTag.Text;
+        string imgLink = ImageTag.Text;
 
         Debug.WriteLine(categoryName);
         Debug.WriteLine(title);
         Debug.WriteLine(content);
-        if (!insertArticle(categoryName, title, content,userId))
+        if (!insertArticle(categoryName, title, content,userId, imgLink))
         {
             ScriptManager.RegisterClientScriptBlock(this, GetType(), "ErrorMessage",
                "alert('Uai, Uai, si fasi aci?')", true);
@@ -50,7 +51,7 @@ public partial class propose_news : System.Web.UI.Page
     public bool insertArticle(
         string categoryName, string title,
         string content,
-        Guid userId) {
+        Guid userId, string imgLink) {
         var cursor = new SqlConnection(
             ConfigurationManager.ConnectionStrings["SqlServices"].ConnectionString
         );
@@ -62,6 +63,7 @@ public partial class propose_news : System.Web.UI.Page
 
         const string insertCategories = "INSERT INTO Categories VALUES(@CategoryName)";
 
+        Guid ArticleId = Guid.NewGuid();
         using (SqlCommand command = new SqlCommand(insertCategories, cursor))
         {
             command.Parameters.AddWithValue("CategoryName", categoryName);
@@ -71,7 +73,6 @@ public partial class propose_news : System.Web.UI.Page
             }
             catch (Exception e)
             {
-                cursor.Close();
                 Debug.WriteLine(e.Message);
                 return false;
             }
@@ -79,7 +80,6 @@ public partial class propose_news : System.Web.UI.Page
         using (SqlCommand command = new SqlCommand(insertArticles, cursor))
         {
 
-            Guid ArticleId = Guid.NewGuid();
             command.Parameters.AddWithValue("ArticleId", ArticleId);
             command.Parameters.AddWithValue("Title", title);
             command.Parameters.AddWithValue("Content", content);
@@ -100,6 +100,28 @@ public partial class propose_news : System.Web.UI.Page
             {
                 Debug.WriteLine(e.Message);
                 return false;
+            }
+
+        }
+
+        if (imgLink.Length != 0)
+        {
+            //insert image
+            const string insertImage = "INSERT INTO Thumbnails Values(" +
+                "@ArticleId, @ThumbLink)";
+            using (SqlCommand command = new SqlCommand(insertImage, cursor))
+            {
+                command.Parameters.AddWithValue("ArticleId", ArticleId);
+                command.Parameters.AddWithValue("ThumbLink", imgLink);
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                    return false;
+                }
             }
 
         }

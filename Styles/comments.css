@@ -64,3 +64,8 @@
     border-top:1px dotted #bbb;
     padding:10px;
 }
+.img 
+{
+    max-width:250px;
+    max-height:50px;
+}
