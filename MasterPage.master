@@ -97,7 +97,7 @@
 
        <asp:LoginView runat="server">
        <RoleGroups>
-            <asp:RoleGroup Roles="admin,editor">
+            <asp:RoleGroup Roles="editor">
                 <ContentTemplate>
                     <asp:Button id="ReviewButton" CssClass="btn btn-default"
                     runat="server" OnClick="Review"

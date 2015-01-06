@@ -4,6 +4,8 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false"
+        AllowPaging="true"
+        PageSize="5"
         DataSourceID="SqlDataSource1">
         <Columns>
         <asp:TemplateField HeaderText="Ultimele stiri">

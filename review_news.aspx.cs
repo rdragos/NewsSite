@@ -13,7 +13,7 @@ public partial class review_news : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!Roles.IsUserInRole("editor") && !Roles.IsUserInRole("admin")) {
+        if (!Roles.IsUserInRole("editor")) {
             Response.Redirect("MainPage.aspx");
         }
         var con = ConfigurationManager.ConnectionStrings["SqlServices"].ToString();
